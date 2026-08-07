@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ordo 内测说明书 · 0.1.6-beta.2</title>
+<style>
+  :root{
+    --bg:#faf9f7; --card:#ffffff; --ink:#1c1b19; --ink2:#4a4843; --ink3:#8a867e;
+    --line:#e6e3dd; --accent:#8a6a3b; --accent-soft:#f4efe6;
+    --warn-bg:#fdf6ec; --warn-line:#e6c98a; --warn-ink:#7a5a1e;
+    --stop-bg:#fdf1f0; --stop-line:#e8b4ae; --stop-ink:#8a3226;
+    --code-bg:#20201e; --code-ink:#e8e5df;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"SF Pro Text","PingFang SC","Helvetica Neue",Arial,sans-serif;
+    font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:40px 22px 80px}
+  header{border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:32px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:30px;line-height:1.3;margin:10px 0 8px;font-weight:700;letter-spacing:-.01em}
+  .meta{font-size:13px;color:var(--ink3)}
+  h2{font-size:21px;margin:44px 0 14px;font-weight:700;letter-spacing:-.01em;
+     padding-top:22px;border-top:1px solid var(--line)}
+  h2:first-of-type{border-top:none;padding-top:0}
+  h3{font-size:16px;margin:26px 0 10px;font-weight:650;color:var(--ink)}
+  p{margin:0 0 14px}
+  strong{font-weight:650}
+  a{color:var(--accent)}
+  ul,ol{margin:0 0 16px;padding-left:22px}
+  li{margin-bottom:8px}
+  .lead{font-size:17px;color:var(--ink2)}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:0 0 20px}
+  .box.warn{background:var(--warn-bg);border-color:var(--warn-line)}
+  .box.warn .tag{color:var(--warn-ink)}
+  .box.stop{background:var(--stop-bg);border-color:var(--stop-line)}
+  .box.stop .tag{color:var(--stop-ink)}
+  .tag{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;margin-bottom:8px;color:var(--accent)}
+  .box p:last-child{margin-bottom:0}
+  code{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;font-size:13.5px;
+    background:var(--accent-soft);padding:2px 6px;border-radius:5px;color:#5c4522;word-break:break-all}
+  pre{background:var(--code-bg);color:var(--code-ink);border-radius:12px;padding:18px 18px;overflow-x:auto;margin:0}
+  pre code{background:none;color:inherit;padding:0;font-size:13px;line-height:1.7;word-break:normal;white-space:pre}
+  .codewrap{position:relative;margin:0 0 8px}
+  .copy{position:absolute;top:10px;right:10px;background:#3a3934;color:#e8e5df;border:1px solid #55534c;
+    border-radius:7px;font-size:12px;padding:5px 11px;cursor:pointer;font-family:inherit}
+  .copy:hover{background:#4a4842}
+  .copy.done{background:var(--accent);border-color:var(--accent);color:#fff}
+  .hint{font-size:13px;color:var(--ink3);margin:0 0 20px}
+  .steps{counter-reset:s;list-style:none;padding-left:0}
+  .steps li{counter-increment:s;position:relative;padding-left:38px;margin-bottom:12px}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:2px;width:24px;height:24px;
+    border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:700;
+    display:flex;align-items:center;justify-content:center}
+  .perm{border-left:3px solid var(--accent);padding:2px 0 2px 16px;margin:0 0 18px}
+  .perm b{display:block;font-size:15px}
+  .known{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 20px 8px 40px;margin:0 0 20px}
+  .known li{margin:12px 0}
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);font-size:14px;color:var(--ink3)}
+  .contact{background:var(--accent-soft);border-radius:12px;padding:16px 20px;margin:0 0 18px;font-size:15px}
+  @media (max-width:520px){ .wrap{padding:28px 16px 60px} h1{font-size:25px} h2{font-size:19px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Beta · 内测说明书</div>
+  <h1>Ordo</h1>
+  <div class="meta">版本 0.1.6-beta.2 &nbsp;·&nbsp; 适用 macOS 14 及以上 &nbsp;·&nbsp; 请在 Mac 上打开本页</div>
+</header>
+
+<p class="lead">这是内测版，不是成品。下面每一条都是实话，包括不好的部分。</p>
+
+<h2>Ordo 是什么</h2>
+<p>Ordo 是一个装在 Mac 上的工作记录与复盘工具。你开始工作时按一下「开始录制」，它在后台按需截屏并记录你切了哪些窗口、做了哪些操作；停下来的时候，它把这一段时间交给视觉大模型去看，告诉你这段时间你其实在做什么任务、时间花在哪儿了。</p>
+<p>它想解决的问题很具体：<strong>一天过完，说不清自己干了什么。</strong>不是靠你手动记工时，而是靠它自己看。</p>
+<p>内测阶段能用的就是这条主线：录一段 → 让 AI 看懂 → 出一份时间与任务的分布。更远的规划（主动提醒、代你执行）还没做进来，不要按宣传页的期待来验收这个版本。</p>
+
+<h2>装之前，请务必先看这三件事</h2>
+
+<div class="box stop">
+  <span class="tag">第一 · 它会截你的屏，而且截图会上传</span>
+  <p>截图先在本机压缩到宽 1280、JPEG 质量 0.7，然后编码后发到阿里云百炼（<code>dashscope.aliyuncs.com</code>）交给通义千问的视觉模型分析。<strong>上传的是你整个屏幕的画面</strong>，不是某个窗口——所以如果屏幕上同时有微信聊天、密码管理器、财务表格，它们都在那张图里。</p>
+  <p style="margin-top:12px">如果 App 内的引导文案与本页描述不一致，<strong>以本页为准</strong>；引导文案会在下个版本更新。</p>
+</div>
+
+<div class="box">
+  <span class="tag">第二 · 涉密和敏感场景请直接停掉录制</span>
+  <p>停止录制之后不会再有任何截图产生，也不会有任何上传。菜单栏图标在录制时是红色实心圆点并显示计时，没在录制时是一个眼睛图标——一眼就能确认当前状态。</p>
+</div>
+
+<div class="box warn">
+  <span class="tag">第三 · 这个版本还没做 Apple 公证，首次打开会被系统拦一下</span>
+  <p>下面「安装」一节给了两条路，第一条不会遇到任何拦截弹窗。公证正在办（等苹果开发者账号审核），办完之后就跟正常 App 一样双击即开。</p>
+</div>
+
+<h2>安装</h2>
+
+<h3>方式一：一行命令（推荐，不会被系统拦）</h3>
+<p>打开「终端」（Terminal，聚焦搜索 terminal 回车），把下面整段一次性粘贴进去，回车：</p>
+<div class="codewrap">
+  <button class="copy" onclick="copyCmd(this)">复制</button>
+  <pre><code id="cmd">curl -fL https://cookey.com.cn/updates/Ordo-latest.dmg -o /tmp/Ordo.dmg
+hdiutil attach -nobrowse -quiet /tmp/Ordo.dmg -mountpoint /tmp/OrdoDMG
+osascript -e 'quit app "Ordo"' 2>/dev/null
+[ -e /Applications/Ordo.app ] &amp;&amp; mv /Applications/Ordo.app ~/.Trash/Ordo-$(date +%s).app
+cp -R /tmp/OrdoDMG/Ordo.app /Applications/
+hdiutil detach /tmp/OrdoDMG -quiet
+xattr -dr com.apple.quarantine /Applications/Ordo.app 2>/dev/null
+open /Applications/Ordo.app</code></pre>
+</div>
+<p class="hint">它做的事按顺序是：下载安装包 → 挂载 → 退掉可能正在运行的旧版本 → 把旧版本挪进废纸篓（不是直接删，你随时能捞回来）→ 拷进「应用程序」→ 卸载安装包 → 清掉下载隔离标记 → 启动。</p>
+<p>之所以推荐这条路：用 <code>curl</code> 下载的文件不带 macOS 的「隔离标记」，Gatekeeper 就不会介入，你不会看到任何「无法验证开发者」的弹窗。</p>
+
+<h3>方式二：图形界面（会被拦一次，需要五步放行）</h3>
+<ol class="steps">
+  <li>浏览器打开 <a href="https://cookey.com.cn/updates/Ordo-latest.dmg">cookey.com.cn/updates/Ordo-latest.dmg</a> 下载，双击挂载，把 Ordo 拖进「应用程序」。</li>
+  <li>双击 Ordo，会弹出「Apple 无法验证 Ordo 是否包含恶意软件」，点「完成」。看起来像失败了，其实是正常流程的第一步。</li>
+  <li>打开「系统设置 → 隐私与安全性」，滑到下面的「安全性」区域，会看到一行「已阻止"Ordo"以保护 Mac」，右边有「仍要打开」按钮。</li>
+  <li>点「仍要打开」，再确认一次。</li>
+  <li>输入你的 Mac 登录密码。之后就正常了，只有第一次需要这样。</li>
+</ol>
+<div class="box warn">
+  <p>macOS 15 之后，老办法「右键 → 打开」已经被苹果取消了，只剩上面这条系统设置里的路。别在右键菜单里找了。</p>
+</div>
+
+<h2>首次启动：三步引导</h2>
+<p><strong>第一步，填个名字。</strong>用来让 Ordo 认出「你自己」，不至于把你的名字当成一个联系人统计进去。</p>
+<p><strong>第二步，授权。</strong>需要三个系统权限，都会跳到系统设置对应位置，授权完回来点「刷新权限状态」：</p>
+
+<div class="perm"><b>屏幕录制</b>截屏用。不给这个，Ordo 什么都看不到，等于不能用。</div>
+<div class="perm"><b>辅助功能</b>读取屏幕上的窗口标题、按钮这类界面结构信息。用来判断你在哪个 App 的哪个界面，比单看图片准得多。</div>
+<div class="perm"><b>输入监控</b>记录键鼠动作的<strong>时机</strong>（什么时候有操作、有多密集），用来判断你是在专注干活还是在发呆，以及决定什么时候值得截一张图。<strong>不记录你按了哪些具体的键</strong>，不做键盘记录。</div>
+
+<p>授权时如果系统设置里已经有一条旧的 Ordo 记录，先把它删掉再重新加，否则可能出现「看着是开着的但实际不生效」的情况。</p>
+
+<p><strong>第三步，AI 分析（可选）。</strong>内测期我内置了一份共享的免费额度，每台机器每天 50 次模型调用，装完直接能用，不用填任何 key。这份额度是我自己付费的，所以：如果你打算长期用或者用得比较重，建议去 <a href="https://bailian.console.aliyun.com/">阿里云百炼</a> 申请一个自己的 API Key 填进去（设置里那一栏），额度不限，费用按你自己的账号走。</p>
+
+<h2>怎么用</h2>
+<p><strong>开始一段记录。</strong>主窗口顶部有「开始录制」按钮，菜单栏图标点开也有。开始之后它不会一直疯狂截屏——只在检测到你切换窗口、有明显操作变化的时候截，另外每 5 秒有一次心跳兜底。你正常干活就行。</p>
+<p><strong>停下来看结果。</strong>点「停止录制」，这一段成为一条「会话」。Ordo 会把这段时间的截图交给模型分析，出任务判断和时间分布。会话越长分析越久，几分钟的会话通常几十秒内出结果。</p>
+<p><strong>四个页面：</strong></p>
+<ul>
+  <li><strong>今日</strong> —— 今天的录制情况和当前状态，也是启停录制的地方。</li>
+  <li><strong>洞察</strong> —— 从多天数据里归纳的规律，比如时间都花在哪类事情上。数据少的时候这页会很空，正常。</li>
+  <li><strong>历史</strong> —— 所有会话列表，按今天／本周／本月筛。点进单条会话可以逐张回看截图，以及看模型对这段时间的判断。</li>
+  <li><strong>设置</strong> —— 名字、API Key、主题这些。</li>
+</ul>
+<div class="box">
+  <span class="tag">注意有两个设置界面</span>
+  <p>这是这个版本的一个毛病：主窗口侧边栏里的「设置」只有一部分选项；按 <code>⌘,</code> 打开的那个独立设置窗口里才有<strong>无感录制</strong>（开了之后启动 App 就自动开始录，默认关）、<strong>视觉分析模型</strong>选择、<strong>存储位置</strong>，以及<strong>自动更新</strong>开关。要找的东西在侧边栏没有，就去 <code>⌘,</code> 那个窗口翻。</p>
+</div>
+<p><strong>退出：</strong><code>⌘Q</code>。退出时它会先把当前录制的数据存好再退。</p>
+
+<h2>你的数据在哪，怎么删</h2>
+<p>所有东西都在这一个目录里：</p>
+<div class="codewrap"><pre><code>~/Library/Application Support/Ordo/</code></pre></div>
+<p class="hint">Finder 里按 <code>⇧⌘G</code> 粘贴上面这个路径就能直接过去。</p>
+<p>里面有截图（<code>captures/&lt;时间戳&gt;/screenshots/</code>）、录音、模型分析结果、会话索引。</p>
+<p><strong>会长得很快。</strong>我自己 50 个会话大约占了 465 MB，主要是截图。这个版本<strong>没有自动清理</strong>，也没有保留期设置，需要你自己去看。在 App 内删除会话是移到废纸篓，不是直接抹掉，误删能捞回来。</p>
+<p><strong>彻底卸载</strong> = 把「应用程序」里的 Ordo 拖进废纸篓 + 把上面那个目录拖进废纸篓 + 在「系统设置 → 隐私与安全性」里把屏幕录制／辅助功能／输入监控三处的 Ordo 移除。</p>
+<div class="box">
+  <span class="tag">关于上传，把话说尽</span>
+  <p>会上传的只有压缩后的屏幕截图，发往阿里云百炼做分析。麦克风录音只在本机存成 m4a 文件，<strong>不上传、不转写</strong>（这个版本其实还没用上这些录音）。除此之外没有任何数据发到我这里——我这边收不到你的截图，也没有任何服务端在收集你的使用数据。反过来说这也意味着：<strong>出问题我看不到，只能靠你告诉我。</strong></p>
+</div>
+
+<h2>已知限制（这个版本就是这样，不用报）</h2>
+<ol class="known">
+  <li><strong>首次打开会被系统拦</strong> —— 尚未公证，见上文。</li>
+  <li><strong>App 内引导文案与实际行为的描述不一致</strong> —— 以本页描述为准，下个版本更新文案。</li>
+  <li><strong>一启动可能就开始烧额度</strong> —— 如果你机器上已经有旧的录制数据，Ordo 启动时会自己去补分析那些老会话，不需要你点任何按钮。所以有可能你刚打开 App，今天的 50 次免费额度就少了一截。这个行为该有个开关，还没做。</li>
+  <li><strong>设置里的「图片质量」滑块目前不起作用</strong> —— 拖它没有任何效果，实际用的一直是固定的 1280 宽／0.7 质量。</li>
+  <li><strong>多屏用户注意</strong> —— 截的是所有显示器拼在一起的整张画面，不是单屏，也不能只截某个窗口。</li>
+  <li><strong>麦克风录音只在特定 App 前台时才自动开</strong> —— 认的是飞书／Lark／Slack／Zoom／Google Meet／腾讯会议／Teams／Webex 这几个。<strong>钉钉和微信不在名单里</strong>，用它们开会不会自动录音。</li>
+  <li><strong>界面里偶尔会冒出「L3」这类词</strong> —— 我自己开发时的内部说法，不是你需要理解的概念，会清掉。</li>
+  <li><strong>没有开机自启，没有通知，没有全局快捷键</strong> —— 每次得自己打开 App。</li>
+  <li><strong>「洞察」页在数据少的时候基本是空的</strong> —— 需要攒几天。</li>
+  <li><strong>App 里还没有反馈入口</strong> —— 计划在 0.1.7 加，眼下请用下面的方式找我。</li>
+  <li><strong>免费额度是内测期的临时安排</strong> —— 每台机器每天 50 次，由我个人承担。如果哪天集体失效，多半是额度用尽了，告诉我一声；长期使用请填自己的 API Key。</li>
+</ol>
+
+<h2>更新</h2>
+<p>这个版本开始接入了自动更新。它会定期检查 cookey.com.cn 上的更新源，有新版本会弹提示，你点一下就升级完了，不需要重新走安装流程。想手动查：<code>⌘,</code> 打开设置窗口 → 「立即检查更新」。</p>
+<div class="box warn">
+  <span class="tag">有一次性的例外要提前打招呼</span>
+  <p>等苹果开发者账号下来之后，我会把签名身份从现在的自签名换成正式的 Apple Developer ID 并做公证。自动更新本身不受影响，会正常升上去；但 macOS 是按签名身份来记权限的，<strong>签名一换，你之前授的屏幕录制／辅助功能／输入监控会失效，需要在系统设置里重新授一次</strong>。到时候我会明确通知。这个动作只发生一次，之后不会再有。</p>
+</div>
+
+<h2>反馈</h2>
+<p>最有用的反馈，按优先级：</p>
+<ol>
+  <li><strong>崩溃或者卡死</strong> —— 什么操作之后发生的。如果 App 崩了，<code>~/Library/Logs/DiagnosticReports/</code> 里会有一个 <code>Ordo-....ips</code> 文件，发给我。</li>
+  <li><strong>AI 判断错了</strong> —— 它说你在做 A、你其实在做 B。这类反馈对我最值钱，请顺手说一下当时你实际在干什么。</li>
+  <li><strong>哪一步让你卡住了或者觉得莫名其妙</strong> —— 尤其是安装和首次授权这一段。</li>
+  <li><strong>你希望它主动帮你做什么</strong> —— 这决定后面往哪走。</li>
+</ol>
+<div class="contact">
+  邮箱 <code>15121971708@163.com</code> &nbsp;·&nbsp; 微信 <code>Net-12-hours</code> &nbsp;·&nbsp; <a href="https://github.com/Liyamaaa/ordo-docs/issues">开个 Issue</a>
+</div>
+
+<footer>
+  最后一句实话：这个版本的价值不在于好用，在于它能不能真的看懂你在干什么。如果它看懂了，其余都是时间问题；如果没看懂，请一定告诉我它错在哪儿。
+</footer>
+
+</div>
+<script>
+function copyCmd(btn){
+  var t = document.getElementById('cmd').innerText;
+  function done(){ btn.textContent='已复制'; btn.classList.add('done');
+    setTimeout(function(){ btn.textContent='复制'; btn.classList.remove('done'); }, 1800); }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(done, fallback);
+  } else { fallback(); }
+  function fallback(){
+    var ta=document.createElement('textarea'); ta.value=t;
+    ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+    ta.select(); try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent='请手动选择复制'; }
+    document.body.removeChild(ta);
+  }
+}
+</script>
+</body>
+</html>
