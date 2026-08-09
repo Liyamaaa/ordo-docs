@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ordo 内测说明书 · 0.1.6-beta.2</title>
+<title>Ordo 内测说明书 · 0.1.7-beta.2</title>
 <style>
   :root{
     --bg:#faf9f7; --card:#ffffff; --ink:#1c1b19; --ink2:#4a4843; --ink3:#8a867e;
@@ -68,7 +68,7 @@
 <header>
   <div class="eyebrow">Beta · 内测说明书</div>
   <h1>Ordo</h1>
-  <div class="meta">版本 0.1.6-beta.2 &nbsp;·&nbsp; 适用 macOS 14 及以上 &nbsp;·&nbsp; 请在 Mac 上打开本页</div>
+  <div class="meta">版本 0.1.7-beta.2 &nbsp;·&nbsp; 适用 macOS 14 及以上 &nbsp;·&nbsp; 请在 Mac 上打开本页</div>
 </header>
 
 <p class="lead">这是内测版，不是成品。下面每一条都是实话，包括不好的部分。</p>
@@ -83,7 +83,7 @@
 <div class="box stop">
   <span class="tag">第一 · 它会截你的屏，而且截图会上传</span>
   <p>截图先在本机压缩到宽 1280、JPEG 质量 0.7，然后编码后发到阿里云百炼（<code>dashscope.aliyuncs.com</code>）交给通义千问的视觉模型分析。<strong>上传的是你整个屏幕的画面</strong>，不是某个窗口——所以如果屏幕上同时有微信聊天、密码管理器、财务表格，它们都在那张图里。</p>
-  <p style="margin-top:12px">如果 App 内的引导文案与本页描述不一致，<strong>以本页为准</strong>；引导文案会在下个版本更新。</p>
+  <p style="margin-top:12px">这一点在 0.1.7 之前是说错的：0.1.6 的首次引导页写着「你的数据完全存储在本地，不会上传到任何服务器」，那句话是错的，是我的疏漏。<strong>0.1.7 已经改掉</strong>，现在引导页如实写明截图需要发送给阿里云百炼做内容识别、这是分析功能的前提。如果你手上还是 0.1.6，看到的仍是错的那句，以本页为准。</p>
 </div>
 
 <div class="box">
@@ -106,12 +106,13 @@
 hdiutil attach -nobrowse -quiet /tmp/Ordo.dmg -mountpoint /tmp/OrdoDMG
 osascript -e 'quit app "Ordo"' 2>/dev/null
 [ -e /Applications/Ordo.app ] &amp;&amp; mv /Applications/Ordo.app ~/.Trash/Ordo-$(date +%s).app
-cp -R /tmp/OrdoDMG/Ordo.app /Applications/
+ditto /tmp/OrdoDMG/Ordo.app /Applications/Ordo.app
 hdiutil detach /tmp/OrdoDMG -quiet
 xattr -dr com.apple.quarantine /Applications/Ordo.app 2>/dev/null
 open /Applications/Ordo.app</code></pre>
 </div>
 <p class="hint">它做的事按顺序是：下载安装包 → 挂载 → 退掉可能正在运行的旧版本 → 把旧版本挪进废纸篓（不是直接删，你随时能捞回来）→ 拷进「应用程序」→ 卸载安装包 → 清掉下载隔离标记 → 启动。</p>
+<p class="hint">拷贝这一步用的是 <code>ditto</code> 而不是 <code>cp -R</code>：<code>cp</code> 不保证完整保留 App 包里的扩展属性和签名结构，拷坏了会表现成「装完打不开」或者签名校验失败。<code>ditto</code> 是 macOS 自带的，专门干这件事。</p>
 <p>之所以推荐这条路：用 <code>curl</code> 下载的文件不带 macOS 的「隔离标记」，Gatekeeper 就不会介入，你不会看到任何「无法验证开发者」的弹窗。</p>
 
 <h3>方式二：图形界面（会被拦一次，需要五步放行）</h3>
@@ -136,7 +137,7 @@ open /Applications/Ordo.app</code></pre>
 
 <p>授权时如果系统设置里已经有一条旧的 Ordo 记录，先把它删掉再重新加，否则可能出现「看着是开着的但实际不生效」的情况。</p>
 
-<p><strong>第三步，AI 分析（可选）。</strong>内测期我内置了一份共享的免费额度，每台机器每天 50 次模型调用，装完直接能用，不用填任何 key。这份额度是我自己付费的，所以：如果你打算长期用或者用得比较重，建议去 <a href="https://bailian.console.aliyun.com/">阿里云百炼</a> 申请一个自己的 API Key 填进去（设置里那一栏），额度不限，费用按你自己的账号走。</p>
+<p><strong>第三步，AI 分析（可选）。</strong>内测期我内置了一份共享的免费额度，装完直接能用，不用填任何 key。额度分两档：每台机器每天 6000 次截图分析 + 500 次 AI 拆解/排程——这个量足够挂满一整个工作日，正常用不到头，它更像是防程序跑飞的保险丝（0.1.7-beta.2 之前是一天 50 次两者共用，一次录制就能打穿，已经修了）。这份额度是我自己付费的，所以：如果你打算长期用或者用得比较重，建议去 <a href="https://bailian.console.aliyun.com/">阿里云百炼</a> 申请一个自己的 API Key 填进去（设置里那一栏），额度不限，费用按你自己的账号走。</p>
 
 <h2>怎么用</h2>
 <p><strong>开始一段记录。</strong>主窗口顶部有「开始录制」按钮，菜单栏图标点开也有。开始之后它不会一直疯狂截屏——只在检测到你切换窗口、有明显操作变化的时候截，另外每 5 秒有一次心跳兜底。你正常干活就行。</p>
@@ -150,7 +151,8 @@ open /Applications/Ordo.app</code></pre>
 </ul>
 <div class="box">
   <span class="tag">注意有两个设置界面</span>
-  <p>这是这个版本的一个毛病：主窗口侧边栏里的「设置」只有一部分选项；按 <code>⌘,</code> 打开的那个独立设置窗口里才有<strong>无感录制</strong>（开了之后启动 App 就自动开始录，默认关）、<strong>视觉分析模型</strong>选择、<strong>存储位置</strong>，以及<strong>自动更新</strong>开关。要找的东西在侧边栏没有，就去 <code>⌘,</code> 那个窗口翻。</p>
+  <p>这是这个版本的一个毛病：主窗口侧边栏里的「设置」只有一部分选项；按 <code>⌘,</code> 打开的那个独立设置窗口里才有<strong>无感录制</strong>（开了之后启动 App 就自动开始录，默认关）、<strong>视觉分析模型</strong>选择和<strong>存储位置</strong>。要找的东西在侧边栏没有，就去 <code>⌘,</code> 那个窗口翻。</p>
+  <p style="margin-top:12px">更新相关的三样——<strong>当前版本号</strong>、<strong>自动检查更新</strong>开关、<strong>立即检查更新</strong>按钮——0.1.7-beta.2 起在主窗口侧边栏的「设置」里也有了一份（最下面的「关于与更新」），不用再去 <code>⌘,</code> 里找。再早的版本只有 <code>⌘,</code> 那个窗口里有，等于绝大多数人根本看不到这个入口，这是我的疏漏。</p>
 </div>
 <p><strong>退出：</strong><code>⌘Q</code>。退出时它会先把当前录制的数据存好再退。</p>
 
@@ -169,23 +171,33 @@ open /Applications/Ordo.app</code></pre>
 <h2>已知限制（这个版本就是这样，不用报）</h2>
 <ol class="known">
   <li><strong>首次打开会被系统拦</strong> —— 尚未公证，见上文。</li>
-  <li><strong>App 内引导文案与实际行为的描述不一致</strong> —— 以本页描述为准，下个版本更新文案。</li>
-  <li><strong>一启动可能就开始烧额度</strong> —— 如果你机器上已经有旧的录制数据，Ordo 启动时会自己去补分析那些老会话，不需要你点任何按钮。所以有可能你刚打开 App，今天的 50 次免费额度就少了一截。这个行为该有个开关，还没做。</li>
+  <li><strong>一启动可能就开始跑分析</strong> —— 如果你机器上已经有旧的录制数据，Ordo 启动时会自己去补分析那些老会话，不需要你点任何按钮。额度抬高之后这不会让你没得用，但它确实会在你没要求的时候悄悄跑起来，该有个开关，还没做。</li>
   <li><strong>设置里的「图片质量」滑块目前不起作用</strong> —— 拖它没有任何效果，实际用的一直是固定的 1280 宽／0.7 质量。</li>
   <li><strong>多屏用户注意</strong> —— 截的是所有显示器拼在一起的整张画面，不是单屏，也不能只截某个窗口。</li>
   <li><strong>麦克风录音只在特定 App 前台时才自动开</strong> —— 认的是飞书／Lark／Slack／Zoom／Google Meet／腾讯会议／Teams／Webex 这几个。<strong>钉钉和微信不在名单里</strong>，用它们开会不会自动录音。</li>
-  <li><strong>界面里偶尔会冒出「L3」这类词</strong> —— 我自己开发时的内部说法，不是你需要理解的概念，会清掉。</li>
+  <li><strong>界面里偶尔会冒出「L3」这类词</strong> —— 开发时的内部说法，不是你需要理解的概念，会清掉。</li>
   <li><strong>没有开机自启，没有通知，没有全局快捷键</strong> —— 每次得自己打开 App。</li>
   <li><strong>「洞察」页在数据少的时候基本是空的</strong> —— 需要攒几天。</li>
-  <li><strong>App 里还没有反馈入口</strong> —— 计划在 0.1.7 加，眼下请用下面的方式找我。</li>
-  <li><strong>免费额度是内测期的临时安排</strong> —— 每台机器每天 50 次，由我个人承担。如果哪天集体失效，多半是额度用尽了，告诉我一声；长期使用请填自己的 API Key。</li>
+  <li><strong>App 里还没有反馈入口</strong> —— 一直想加还没加，我不再报具体版本号了，做好了会在更新说明里写。眼下请用下面「反馈」一节的方式找我。</li>
+  <li><strong>装了公司安全软件的机器，自动更新会失败</strong> —— 不是偶发，是必然，原因和手动升级的办法都在「更新」一节里。</li>
+  <li><strong>每次换安装包之后，「辅助功能」授权可能掉</strong> —— macOS 按签名摘要校验授权，重新打包就可能失效。<strong>它失效时不报错</strong>，只是 Ordo 读不到窗口标题这类信息、分析变差，很容易被当成「AI 变笨了」。升级后顺手看一眼「设置 → 权限」。</li>
+  <li><strong>免费额度是内测期的临时安排</strong> —— 每台机器各自计数（每天 6000 次截图分析 + 500 次拆解/排程），由我个人承担。如果哪天集体失效，App 会明确说明「是我们这边的问题，不是你的」——看到这句话告诉我一声就行，不必去给自己的账号充值；长期使用请填自己的 API Key。</li>
 </ol>
 
 <h2>更新</h2>
-<p>这个版本开始接入了自动更新。它会定期检查 cookey.com.cn 上的更新源，有新版本会弹提示，你点一下就升级完了，不需要重新走安装流程。想手动查：<code>⌘,</code> 打开设置窗口 → 「立即检查更新」。</p>
+<p>0.1.6-beta.2 起接入了自动更新（Sparkle）。它每天检查一次 cookey.com.cn 上的更新源，有新版本会弹提示，你点一下就升级完了，不用重新走安装流程。想手动查：主窗口侧边栏「设置」→ 最下面「关于与更新」→「立即检查更新」（0.1.7-beta.2 起才有；再早的版本只能按 <code>⌘,</code> 打开独立设置窗口，那里也有一份）。</p>
+<div class="box stop">
+  <span class="tag">但有一类机器上，自动更新是必然失败的，不是偶发</span>
+  <p>如果你的 Mac 装了公司统一下发的安全软件（EDR 那类），情况是这样：Ordo 现在还是自签名，这类安全软件会在每次程序启动时做一次强制检查，把启动时间从零点几秒拖到 11 秒以上；而 Sparkle 等待安装器响应的超时是写死在代码里的 7 秒。11 秒 > 7 秒，所以它每次都会在最后一步失败。这不是你操作的问题，也没有设置可以调。<strong>等公证做完（换成 Apple Developer ID）之后这个问题会自然消失</strong>，在那之前公司机器请用下面的手动办法。</p>
+  <p style="margin-top:12px"><strong>手动升级：把「安装」一节里方式一那段命令原样再跑一遍就行。</strong>它是可以重复执行的：会先退掉正在运行的 Ordo，把旧版本挪进废纸篓（不是删，随时能捞回来），再把新版本装进「应用程序」并启动。你的录制数据和设置都不在 App 包里，不会丢。</p>
+</div>
 <div class="box warn">
-  <span class="tag">有一次性的例外要提前打招呼</span>
-  <p>等苹果开发者账号下来之后，我会把签名身份从现在的自签名换成正式的 Apple Developer ID 并做公证。自动更新本身不受影响，会正常升上去；但 macOS 是按签名身份来记权限的，<strong>签名一换，你之前授的屏幕录制／辅助功能／输入监控会失效，需要在系统设置里重新授一次</strong>。到时候我会明确通知。这个动作只发生一次，之后不会再有。</p>
+  <span class="tag">每次换安装包之后，请顺手看一眼「设置 → 权限」</span>
+  <p>macOS 是按签名摘要来记权限的，重新打包就可能让之前的授权失效——最常见的是「辅助功能」变回未授权，而「屏幕录制」还是好的。麻烦的地方在于<strong>它失效时不报错</strong>，Ordo 只是读不到窗口标题这类信息、分析变差，很容易被误认为「AI 变笨了」。看到未授权就点一次重新授上即可。</p>
+</div>
+<div class="box warn">
+  <span class="tag">还有一次影响面最大的换签名要提前打招呼</span>
+  <p>等苹果开发者账号下来之后，我会把签名身份从自签名换成正式的 Apple Developer ID 并做公证。自动更新本身不受影响；但签名身份一换，<strong>你之前授的屏幕录制／辅助功能／输入监控会一起失效，需要在系统设置里重新授一次</strong>。到时候我会明确通知。</p>
 </div>
 
 <h2>反馈</h2>
