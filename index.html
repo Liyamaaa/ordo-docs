@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ordo 内测说明书 · 0.1.7-beta.2</title>
+<title>Ordo 内测说明书 · 0.1.7-beta.4</title>
 <style>
   :root{
     --bg:#faf9f7; --card:#ffffff; --ink:#1c1b19; --ink2:#4a4843; --ink3:#8a867e;
@@ -68,7 +68,7 @@
 <header>
   <div class="eyebrow">Beta · 内测说明书</div>
   <h1>Ordo</h1>
-  <div class="meta">版本 0.1.7-beta.2 &nbsp;·&nbsp; 适用 macOS 14 及以上 &nbsp;·&nbsp; 请在 Mac 上打开本页</div>
+  <div class="meta">版本 0.1.7-beta.4 &nbsp;·&nbsp; 适用 macOS 14 及以上 &nbsp;·&nbsp; 请在 Mac 上打开本页</div>
 </header>
 
 <p class="lead">这是内测版，不是成品。下面每一条都是实话，包括不好的部分。</p>
@@ -92,13 +92,26 @@
 </div>
 
 <div class="box warn">
-  <span class="tag">第三 · 这个版本还没做 Apple 公证，首次打开会被系统拦一下</span>
-  <p>下面「安装」一节给了两条路，第一条不会遇到任何拦截弹窗。公证正在办（等苹果开发者账号审核），办完之后就跟正常 App 一样双击即开。</p>
+  <span class="tag">第三 · 如果你是从旧版升上来的，升上来之后必须重新授权一次</span>
+  <p><strong>0.1.7-beta.4 已经完成 Apple 公证</strong>，签名身份从自签名换成了正式的 Apple Developer ID。新装的同学从此双击即开，不会再有任何拦截弹窗——之前那套「点完成 → 去系统设置 → 仍要打开」可以忘掉了。</p>
+  <p style="margin-top:12px">代价落在老用户身上：macOS 按签名摘要记住权限授权，签名身份一换，<strong>你之前授的辅助功能／屏幕录制／输入监控会一起失效</strong>。麻烦在于系统设置里那几个开关<strong>看起来还是开着的</strong>，实际已经不生效，而且 Ordo 不报错，只是读不到窗口标题、分析质量下降——很容易被当成「AI 突然变笨了」。</p>
+  <p style="margin-top:12px">处理办法在「更新」一节最后，一分钟的事。<strong>这应该是最后一次因为换包而需要重新授权</strong>。</p>
 </div>
 
 <h2>安装</h2>
 
-<h3>方式一：一行命令（推荐，不会被系统拦）</h3>
+<h3>方式一：正常下载安装（推荐）</h3>
+<ol class="steps">
+  <li>浏览器打开 <a href="https://cookey.com.cn/updates/Ordo-latest.dmg">cookey.com.cn/updates/Ordo-latest.dmg</a> 下载，双击挂载。</li>
+  <li>把 Ordo 拖进「应用程序」文件夹。</li>
+  <li><strong>从「应用程序」文件夹里打开它</strong>，不要在挂载出来的那个磁盘映像窗口里直接双击。</li>
+</ol>
+<p>没有第四步。这一版已经过 Apple 公证并装订了票据，Gatekeeper 直接放行，离线也一样。如果你还看到「无法验证开发者」或者「已损坏」，说明你手上的包不是这一版，重新下一次。</p>
+<div class="box warn">
+  <p>第 3 步那句「从应用程序里打开」不是废话：直接在磁盘映像或「下载」目录里双击运行，macOS 会把它当成临时位置的程序对待，权限授权和数据目录都可能对不上，表现出来就是「授权了但不生效」。拖进「应用程序」再打开，这类问题就没有了。</p>
+</div>
+
+<h3>方式二：一行命令（适合升级，或者公司统一装机）</h3>
 <p>打开「终端」（Terminal，聚焦搜索 terminal 回车），把下面整段一次性粘贴进去，回车：</p>
 <div class="codewrap">
   <button class="copy" onclick="copyCmd(this)">复制</button>
@@ -108,24 +121,11 @@ osascript -e 'quit app "Ordo"' 2>/dev/null
 [ -e /Applications/Ordo.app ] &amp;&amp; mv /Applications/Ordo.app ~/.Trash/Ordo-$(date +%s).app
 ditto /tmp/OrdoDMG/Ordo.app /Applications/Ordo.app
 hdiutil detach /tmp/OrdoDMG -quiet
-xattr -dr com.apple.quarantine /Applications/Ordo.app 2>/dev/null
 open /Applications/Ordo.app</code></pre>
 </div>
-<p class="hint">它做的事按顺序是：下载安装包 → 挂载 → 退掉可能正在运行的旧版本 → 把旧版本挪进废纸篓（不是直接删，你随时能捞回来）→ 拷进「应用程序」→ 卸载安装包 → 清掉下载隔离标记 → 启动。</p>
+<p class="hint">它做的事按顺序是：下载安装包 → 挂载 → 退掉可能正在运行的旧版本 → 把旧版本挪进废纸篓（不是直接删，你随时能捞回来）→ 拷进「应用程序」→ 卸载安装包 → 启动。</p>
 <p class="hint">拷贝这一步用的是 <code>ditto</code> 而不是 <code>cp -R</code>：<code>cp</code> 不保证完整保留 App 包里的扩展属性和签名结构，拷坏了会表现成「装完打不开」或者签名校验失败。<code>ditto</code> 是 macOS 自带的，专门干这件事。</p>
-<p>之所以推荐这条路：用 <code>curl</code> 下载的文件不带 macOS 的「隔离标记」，Gatekeeper 就不会介入，你不会看到任何「无法验证开发者」的弹窗。</p>
-
-<h3>方式二：图形界面（会被拦一次，需要五步放行）</h3>
-<ol class="steps">
-  <li>浏览器打开 <a href="https://cookey.com.cn/updates/Ordo-latest.dmg">cookey.com.cn/updates/Ordo-latest.dmg</a> 下载，双击挂载，把 Ordo 拖进「应用程序」。</li>
-  <li>双击 Ordo，会弹出「Apple 无法验证 Ordo 是否包含恶意软件」，点「完成」。看起来像失败了，其实是正常流程的第一步。</li>
-  <li>打开「系统设置 → 隐私与安全性」，滑到下面的「安全性」区域，会看到一行「已阻止"Ordo"以保护 Mac」，右边有「仍要打开」按钮。</li>
-  <li>点「仍要打开」，再确认一次。</li>
-  <li>输入你的 Mac 登录密码。之后就正常了，只有第一次需要这样。</li>
-</ol>
-<div class="box warn">
-  <p>macOS 15 之后，老办法「右键 → 打开」已经被苹果取消了，只剩上面这条系统设置里的路。别在右键菜单里找了。</p>
-</div>
+<p class="hint">和上一版相比少了一行 <code>xattr -dr com.apple.quarantine</code>——那是自签名时代用来绕开 Gatekeeper 的，现在包已经公证，不需要了，留着反而会掩盖「包被改坏了」这类真问题。</p>
 
 <h2>首次启动：三步引导</h2>
 <p><strong>第一步，填个名字。</strong>用来让 Ordo 认出「你自己」，不至于把你的名字当成一个联系人统计进去。</p>
@@ -170,7 +170,7 @@ open /Applications/Ordo.app</code></pre>
 
 <h2>已知限制（这个版本就是这样，不用报）</h2>
 <ol class="known">
-  <li><strong>首次打开会被系统拦</strong> —— 尚未公证，见上文。</li>
+  <li><strike>首次打开会被系统拦 —— 尚未公证</strike> —— <strong>0.1.7-beta.4 已解决</strong>，包已通过 Apple 公证并装订票据，双击即开。</li>
   <li><strong>一启动可能就开始跑分析</strong> —— 如果你机器上已经有旧的录制数据，Ordo 启动时会自己去补分析那些老会话，不需要你点任何按钮。额度抬高之后这不会让你没得用，但它确实会在你没要求的时候悄悄跑起来，该有个开关，还没做。</li>
   <li><strong>设置里的「图片质量」滑块目前不起作用</strong> —— 拖它没有任何效果，实际用的一直是固定的 1280 宽／0.7 质量。</li>
   <li><strong>多屏用户注意</strong> —— 截的是所有显示器拼在一起的整张画面，不是单屏，也不能只截某个窗口。</li>
@@ -179,25 +179,25 @@ open /Applications/Ordo.app</code></pre>
   <li><strong>没有开机自启，没有通知，没有全局快捷键</strong> —— 每次得自己打开 App。</li>
   <li><strong>「洞察」页在数据少的时候基本是空的</strong> —— 需要攒几天。</li>
   <li><strong>App 里还没有反馈入口</strong> —— 一直想加还没加，我不再报具体版本号了，做好了会在更新说明里写。眼下请用下面「反馈」一节的方式找我。</li>
-  <li><strong>装了公司安全软件的机器，自动更新会失败</strong> —— 不是偶发，是必然，原因和手动升级的办法都在「更新」一节里。</li>
-  <li><strong>每次换安装包之后，「辅助功能」授权可能掉</strong> —— macOS 按签名摘要校验授权，重新打包就可能失效。<strong>它失效时不报错</strong>，只是 Ordo 读不到窗口标题这类信息、分析变差，很容易被当成「AI 变笨了」。升级后顺手看一眼「设置 → 权限」。</li>
+  <li><strong>装了公司安全软件的机器，自动更新可能失败</strong> —— 之前我写的是「必然失败，原因是自签名」，那条因果我自己复测时没复现出来，现在降级为嫌疑。这一版换成公证包之后请再试一次，仍然失败就用「更新」一节里的手动办法，并告诉我。</li>
+  <li><strong>0.1.7-beta.4 这次换签名，辅助功能／屏幕录制／输入监控授权一定会失效</strong> —— 系统设置里开关看着还是开的，实际不生效，而且 <strong>Ordo 不会报错</strong>，只是读不到窗口标题、分析变差，很容易被当成「AI 变笨了」。处理办法见「更新」一节，移除再重加即可。这应该是最后一次。</li>
   <li><strong>免费额度是内测期的临时安排</strong> —— 每台机器各自计数（每天 6000 次截图分析 + 500 次拆解/排程），由我个人承担。如果哪天集体失效，App 会明确说明「是我们这边的问题，不是你的」——看到这句话告诉我一声就行，不必去给自己的账号充值；长期使用请填自己的 API Key。</li>
 </ol>
 
 <h2>更新</h2>
-<p>0.1.6-beta.2 起接入了自动更新（Sparkle）。它每天检查一次 cookey.com.cn 上的更新源，有新版本会弹提示，你点一下就升级完了，不用重新走安装流程。想手动查：主窗口侧边栏「设置」→ 最下面「关于与更新」→「立即检查更新」（0.1.7-beta.2 起才有；再早的版本只能按 <code>⌘,</code> 打开独立设置窗口，那里也有一份）。</p>
+<p>0.1.6-beta.2 起接入了自动更新（Sparkle）。它每天检查一次 cookey.com.cn 上的更新源，<strong>检查到新版本会自动下载并装上，你不需要点任何东西</strong>，通常在下一次启动 Ordo 时就已经是新版了。想手动查：主窗口侧边栏「设置」→ 最下面「关于与更新」→「立即检查更新」（0.1.7-beta.2 起才有；再早的版本只能按 <code>⌘,</code> 打开独立设置窗口，那里也有一份）。</p>
+<div class="box warn">
+  <span class="tag">0.1.7-beta.4：签名身份已经换了，请重新授权一次</span>
+  <p>这一版把签名从自签名换成了 Apple Developer ID 并完成公证。<strong>应用功能一行代码都没改</strong>，唯一的变化就是签名——以及随之而来的权限失效。</p>
+  <p style="margin-top:12px">怎么做（一分钟）：先<strong>退出 Ordo</strong>，然后打开「系统设置 → 隐私与安全性 → 辅助功能」，选中 Ordo 点 <strong>−</strong> 移除，再点 <strong>+</strong> 添加 <code>/Applications/Ordo.app</code>，确认开关是开的。「屏幕录制」和「输入监控」两栏做同样的操作。三项都弄完再启动 Ordo。</p>
+  <p style="margin-top:12px">为什么要移除再添加、而不是把开关关掉再打开：系统里记的是一份「签名要求」，只有移除重加才会按当前这个包重新写一份。开关来回拨有可能仍然沿用旧的那份，表现出来就是「开着但不生效」。</p>
+  <p style="margin-top:12px">好消息是<strong>这应该是最后一次</strong>。自签名时代系统按二进制摘要记权限，每重新打一次包就会变；换成 Developer ID 之后改按证书记，以后发新版不会再掉。</p>
+</div>
 <div class="box stop">
-  <span class="tag">但有一类机器上，自动更新是必然失败的，不是偶发</span>
-  <p>如果你的 Mac 装了公司统一下发的安全软件（EDR 那类），情况是这样：Ordo 现在还是自签名，这类安全软件会在每次程序启动时做一次强制检查，把启动时间从零点几秒拖到 11 秒以上；而 Sparkle 等待安装器响应的超时是写死在代码里的 7 秒。11 秒 > 7 秒，所以它每次都会在最后一步失败。这不是你操作的问题，也没有设置可以调。<strong>等公证做完（换成 Apple Developer ID）之后这个问题会自然消失</strong>，在那之前公司机器请用下面的手动办法。</p>
-  <p style="margin-top:12px"><strong>手动升级：把「安装」一节里方式一那段命令原样再跑一遍就行。</strong>它是可以重复执行的：会先退掉正在运行的 Ordo，把旧版本挪进废纸篓（不是删，随时能捞回来），再把新版本装进「应用程序」并启动。你的录制数据和设置都不在 App 包里，不会丢。</p>
-</div>
-<div class="box warn">
-  <span class="tag">每次换安装包之后，请顺手看一眼「设置 → 权限」</span>
-  <p>macOS 是按签名摘要来记权限的，重新打包就可能让之前的授权失效——最常见的是「辅助功能」变回未授权，而「屏幕录制」还是好的。麻烦的地方在于<strong>它失效时不报错</strong>，Ordo 只是读不到窗口标题这类信息、分析变差，很容易被误认为「AI 变笨了」。看到未授权就点一次重新授上即可。</p>
-</div>
-<div class="box warn">
-  <span class="tag">还有一次影响面最大的换签名要提前打招呼</span>
-  <p>等苹果开发者账号下来之后，我会把签名身份从自签名换成正式的 Apple Developer ID 并做公证。自动更新本身不受影响；但签名身份一换，<strong>你之前授的屏幕录制／辅助功能／输入监控会一起失效，需要在系统设置里重新授一次</strong>。到时候我会明确通知。</p>
+  <span class="tag">如果你的机器装了公司安全软件，之前自动更新一直失败</span>
+  <p>先说清楚已知和未知。<strong>已知</strong>：Sparkle 等待安装器响应的超时是写死在代码里的 7 秒，超过就失败；公司统一下发的安全软件（EDR 那类）会在程序启动时插一道强制检查，把启动拖慢。<strong>之前的说法是「自签名会被拖到 11 秒以上，所以必然失败」，但我在本机复测时并没有复现出那个数字</strong>，所以这条因果现在只能算作嫌疑，不是结论。</p>
+  <p style="margin-top:12px">实际怎么办：这一版已经是公证包了，<strong>如果你之前自动更新一直失败，请在升到 0.1.7-beta.4 之后再试一次</strong>。如果还是失败，用下面的手动办法，并且告诉我一声——那说明真正的原因不在签名上，我需要重新查。</p>
+  <p style="margin-top:12px"><strong>手动升级：把「安装」一节里方式二那段命令原样再跑一遍就行。</strong>它可以重复执行：会先退掉正在运行的 Ordo，把旧版本挪进废纸篓（不是删，随时能捞回来），再把新版本装进「应用程序」并启动。你的录制数据和设置都不在 App 包里，不会丢。</p>
 </div>
 
 <h2>反馈</h2>
@@ -214,6 +214,7 @@ open /Applications/Ordo.app</code></pre>
 
 <footer>
   最后一句实话：这个版本的价值不在于好用，在于它能不能真的看懂你在干什么。如果它看懂了，其余都是时间问题；如果没看懂，请一定告诉我它错在哪儿。
+  <div style="margin-top:14px;color:var(--ink3)">最后更新：2026-08-12 · 对应版本 0.1.7-beta.4 (build 14)</div>
 </footer>
 
 </div>
