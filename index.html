@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ordo 内测说明书 · 0.1.7-beta.4</title>
+<title>Ordo 使用说明 · 0.3.2</title>
 <style>
   :root{
     --bg:#faf9f7; --card:#ffffff; --ink:#1c1b19; --ink2:#4a4843; --ink3:#8a867e;
@@ -68,10 +68,21 @@
 <header>
   <div class="eyebrow">Beta · 内测说明书</div>
   <h1>Ordo</h1>
-  <div class="meta">版本 0.1.7-beta.4 &nbsp;·&nbsp; 适用 macOS 14 及以上 &nbsp;·&nbsp; 请在 Mac 上打开本页</div>
+  <div class="meta">版本 0.3.2（build 25）&nbsp;·&nbsp; 适用 macOS 14 及以上 &nbsp;·&nbsp; 请在 Mac 上打开本页</div>
 </header>
 
-<p class="lead">这是内测版，不是成品。下面每一条都是实话，包括不好的部分。</p>
+<p class="lead">这是持续迭代中的版本。下面每一条都是实话，包括当前还没做完的部分。</p>
+
+<div class="box">
+  <span class="tag">本次更新 · 0.3.2</span>
+  <ul>
+    <li>Onboarding 已完成真实激活闭环：观察、分析、确认任务，重启后状态可恢复。</li>
+    <li>分析遇到空数据或部分失败时会明确保留状态，不再生成误导性的空洞察。</li>
+    <li>退出时会走正常保存流程，降低录制和分析数据丢失风险。</li>
+    <li>任务详情支持编辑开始时间、预计时长、状态、优先级和提醒偏好。</li>
+    <li>设置页中的显示名称示例统一使用虚拟名字“露露”。</li>
+  </ul>
+</div>
 
 <h2>Ordo 是什么</h2>
 <p>Ordo 是一个装在 Mac 上的工作记录与复盘工具。你开始工作时按一下「开始录制」，它在后台按需截屏并记录你切了哪些窗口、做了哪些操作；停下来的时候，它把这一段时间交给视觉大模型去看，告诉你这段时间你其实在做什么任务、时间花在哪儿了。</p>
@@ -93,7 +104,7 @@
 
 <div class="box warn">
   <span class="tag">第三 · 如果你是从旧版升上来的，升上来之后必须重新授权一次</span>
-  <p><strong>0.1.7-beta.4 已经完成 Apple 公证</strong>，签名身份从自签名换成了正式的 Apple Developer ID。新装的同学从此双击即开，不会再有任何拦截弹窗——之前那套「点完成 → 去系统设置 → 仍要打开」可以忘掉了。</p>
+  <p><strong>0.3.2 使用 Developer ID 签名</strong>。当前本地构建包尚未完成 Apple 公证，首次在其他机器打开时可能仍会看到 Gatekeeper 提示。</p>
   <p style="margin-top:12px">代价落在老用户身上：macOS 按签名摘要记住权限授权，签名身份一换，<strong>你之前授的辅助功能／屏幕录制／输入监控会一起失效</strong>。麻烦在于系统设置里那几个开关<strong>看起来还是开着的</strong>，实际已经不生效，而且 Ordo 不报错，只是读不到窗口标题、分析质量下降——很容易被当成「AI 突然变笨了」。</p>
   <p style="margin-top:12px">处理办法在「更新」一节最后，一分钟的事。<strong>这应该是最后一次因为换包而需要重新授权</strong>。</p>
 </div>
@@ -128,7 +139,7 @@ open /Applications/Ordo.app</code></pre>
 <p class="hint">和上一版相比少了一行 <code>xattr -dr com.apple.quarantine</code>——那是自签名时代用来绕开 Gatekeeper 的，现在包已经公证，不需要了，留着反而会掩盖「包被改坏了」这类真问题。</p>
 
 <h2>首次启动：三步引导</h2>
-<p><strong>第一步，填个名字。</strong>用来让 Ordo 认出「你自己」，不至于把你的名字当成一个联系人统计进去。</p>
+<p><strong>第一步，填个名字。</strong>用来让 Ordo 认出「你自己」，不至于把你的名字当成一个联系人统计进去。测试或演示可以填写虚拟名字“露露”。</p>
 <p><strong>第二步，授权。</strong>需要三个系统权限，都会跳到系统设置对应位置，授权完回来点「刷新权限状态」：</p>
 
 <div class="perm"><b>屏幕录制</b>截屏用。不给这个，Ordo 什么都看不到，等于不能用。</div>
@@ -170,24 +181,24 @@ open /Applications/Ordo.app</code></pre>
 
 <h2>已知限制（这个版本就是这样，不用报）</h2>
 <ol class="known">
-  <li><strike>首次打开会被系统拦 —— 尚未公证</strike> —— <strong>0.1.7-beta.4 已解决</strong>，包已通过 Apple 公证并装订票据，双击即开。</li>
+  <li><strong>首次打开可能出现 Gatekeeper 提示</strong> —— 当前分发包已使用 Developer ID 签名，但尚未完成 Apple 公证。</li>
   <li><strong>一启动可能就开始跑分析</strong> —— 如果你机器上已经有旧的录制数据，Ordo 启动时会自己去补分析那些老会话，不需要你点任何按钮。额度抬高之后这不会让你没得用，但它确实会在你没要求的时候悄悄跑起来，该有个开关，还没做。</li>
   <li><strong>设置里的「图片质量」滑块目前不起作用</strong> —— 拖它没有任何效果，实际用的一直是固定的 1280 宽／0.7 质量。</li>
   <li><strong>多屏用户注意</strong> —— 截的是所有显示器拼在一起的整张画面，不是单屏，也不能只截某个窗口。</li>
   <li><strong>麦克风录音只在特定 App 前台时才自动开</strong> —— 认的是飞书／Lark／Slack／Zoom／Google Meet／腾讯会议／Teams／Webex 这几个。<strong>钉钉和微信不在名单里</strong>，用它们开会不会自动录音。</li>
   <li><strong>界面里偶尔会冒出「L3」这类词</strong> —— 开发时的内部说法，不是你需要理解的概念，会清掉。</li>
-  <li><strong>没有开机自启，没有通知，没有全局快捷键</strong> —— 每次得自己打开 App。</li>
+  <li><strong>没有开机自启、系统通知和全局快捷键</strong> —— 任务详情里的提醒目前只保存为任务偏好，不会弹出 macOS 通知。</li>
   <li><strong>「洞察」页在数据少的时候基本是空的</strong> —— 需要攒几天。</li>
   <li><strong>App 里还没有反馈入口</strong> —— 一直想加还没加，我不再报具体版本号了，做好了会在更新说明里写。眼下请用下面「反馈」一节的方式找我。</li>
   <li><strong>装了公司安全软件的机器，自动更新可能失败</strong> —— 之前我写的是「必然失败，原因是自签名」，那条因果我自己复测时没复现出来，现在降级为嫌疑。这一版换成公证包之后请再试一次，仍然失败就用「更新」一节里的手动办法，并告诉我。</li>
-  <li><strong>0.1.7-beta.4 这次换签名，辅助功能／屏幕录制／输入监控授权一定会失效</strong> —— 系统设置里开关看着还是开的，实际不生效，而且 <strong>Ordo 不会报错</strong>，只是读不到窗口标题、分析变差，很容易被当成「AI 变笨了」。处理办法见「更新」一节，移除再重加即可。这应该是最后一次。</li>
+  <li><strong>更换安装包后权限可能需要重新授权</strong> —— 如果系统设置里的开关看着是开的但功能不生效，请移除并重新添加 Ordo 的辅助功能、屏幕录制和输入监控权限。</li>
   <li><strong>免费额度是内测期的临时安排</strong> —— 每台机器各自计数（每天 6000 次截图分析 + 500 次拆解/排程），由我个人承担。如果哪天集体失效，App 会明确说明「是我们这边的问题，不是你的」——看到这句话告诉我一声就行，不必去给自己的账号充值；长期使用请填自己的 API Key。</li>
 </ol>
 
 <h2>更新</h2>
 <p>0.1.6-beta.2 起接入了自动更新（Sparkle）。它每天检查一次 cookey.com.cn 上的更新源，<strong>检查到新版本会自动下载并装上，你不需要点任何东西</strong>，通常在下一次启动 Ordo 时就已经是新版了。想手动查：主窗口侧边栏「设置」→ 最下面「关于与更新」→「立即检查更新」（0.1.7-beta.2 起才有；再早的版本只能按 <code>⌘,</code> 打开独立设置窗口，那里也有一份）。</p>
 <div class="box warn">
-  <span class="tag">0.1.7-beta.4：签名身份已经换了，请重新授权一次</span>
+  <span class="tag">0.3.2：如果权限不生效，请重新授权</span>
   <p>这一版把签名从自签名换成了 Apple Developer ID 并完成公证。<strong>应用功能一行代码都没改</strong>，唯一的变化就是签名——以及随之而来的权限失效。</p>
   <p style="margin-top:12px">怎么做（一分钟）：先<strong>退出 Ordo</strong>，然后打开「系统设置 → 隐私与安全性 → 辅助功能」，选中 Ordo 点 <strong>−</strong> 移除，再点 <strong>+</strong> 添加 <code>/Applications/Ordo.app</code>，确认开关是开的。「屏幕录制」和「输入监控」两栏做同样的操作。三项都弄完再启动 Ordo。</p>
   <p style="margin-top:12px">为什么要移除再添加、而不是把开关关掉再打开：系统里记的是一份「签名要求」，只有移除重加才会按当前这个包重新写一份。开关来回拨有可能仍然沿用旧的那份，表现出来就是「开着但不生效」。</p>
@@ -196,7 +207,7 @@ open /Applications/Ordo.app</code></pre>
 <div class="box stop">
   <span class="tag">如果你的机器装了公司安全软件，之前自动更新一直失败</span>
   <p>先说清楚已知和未知。<strong>已知</strong>：Sparkle 等待安装器响应的超时是写死在代码里的 7 秒，超过就失败；公司统一下发的安全软件（EDR 那类）会在程序启动时插一道强制检查，把启动拖慢。<strong>之前的说法是「自签名会被拖到 11 秒以上，所以必然失败」，但我在本机复测时并没有复现出那个数字</strong>，所以这条因果现在只能算作嫌疑，不是结论。</p>
-  <p style="margin-top:12px">实际怎么办：这一版已经是公证包了，<strong>如果你之前自动更新一直失败，请在升到 0.1.7-beta.4 之后再试一次</strong>。如果还是失败，用下面的手动办法，并且告诉我一声——那说明真正的原因不在签名上，我需要重新查。</p>
+  <p style="margin-top:12px">实际怎么办：退出 Ordo 后，在系统设置中移除旧的权限记录，再重新添加当前的 <code>/Applications/Ordo.app</code>。如果自动更新失败，请使用安装章节的手动升级命令。</p>
   <p style="margin-top:12px"><strong>手动升级：把「安装」一节里方式二那段命令原样再跑一遍就行。</strong>它可以重复执行：会先退掉正在运行的 Ordo，把旧版本挪进废纸篓（不是删，随时能捞回来），再把新版本装进「应用程序」并启动。你的录制数据和设置都不在 App 包里，不会丢。</p>
 </div>
 
@@ -214,7 +225,7 @@ open /Applications/Ordo.app</code></pre>
 
 <footer>
   最后一句实话：这个版本的价值不在于好用，在于它能不能真的看懂你在干什么。如果它看懂了，其余都是时间问题；如果没看懂，请一定告诉我它错在哪儿。
-  <div style="margin-top:14px;color:var(--ink3)">最后更新：2026-08-12 · 对应版本 0.1.7-beta.4 (build 14)</div>
+  <div style="margin-top:14px;color:var(--ink3)">最后更新：2026-09-16 · 对应版本 0.3.2 (build 25)</div>
 </footer>
 
 </div>
